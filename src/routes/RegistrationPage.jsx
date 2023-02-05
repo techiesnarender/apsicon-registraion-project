@@ -1,7 +1,5 @@
-
-import { Autocomplete, Box, Button, Card, Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, styled, TextField } from "@mui/material";
 import { useState } from "react";
-// import { Form } from "react-router-dom";
+import { Autocomplete, Box, Button, Card, Container, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Stack, styled, TextField } from "@mui/material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -40,7 +38,7 @@ export default function RegistrationPage() {
          <Stack spacing={1}>
           <Item><h2>Registration Form</h2></Item>
         </Stack>
-        <Card sx={{m:1, p:2}}>
+        <Card sx={{m:1, p:2, boxShadow: 2, mb:2, borderRadius:2}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} style={{marginTop: 2}}>
             <Grid item xs={6}>  
               <TextField
