@@ -11,7 +11,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {Link as RouterLink} from 'react-router-dom'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Autocomplete } from '@mui/material';
+import { Autocomplete, Stack } from '@mui/material';
+import AuthService from '../services/auth.service';
 
 function Copyright(props) {
   return (
@@ -38,13 +39,74 @@ export default function SignOut() {
     });
   };
 
+  const initialUserService = {
+    id: null,
+    fullname: "",
+    email: "",
+    mobileno: "",
+    password: "",
+    country: "",
+    agree: "",
+    enabled: true,
+  };
+
+  const [users, setUser] = React.useState(initialUserService);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUser({ ...users, [name]: value });
+  };
+
+  const saveUser = (e) => {
+    e.preventDefault();
+
+    //const isValid = formValidation();
+
+   // if (isValid) {
+      var data = {
+        fullname: users.fullname,
+        email: users.email,
+        mobileno: users.mobileno,
+        password: users.password,
+        country: users.country,
+        agree: users.agree,
+        enabled: users.enabled,
+      };
+
+      AuthService.create(data)
+        .then((response) => {
+          setUser({
+            id: response.data.id,
+            fullname: response.data.fullname,
+            email: response.data.email,
+            mobileno: response.data.mobileno,
+            password: response.data.password,
+            country: response.data.country,
+            agree: response.users.agree,
+            enabled: response.data.enabled,
+          });
+         console.log(response.data);
+        })
+        .catch((error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(e);
+        });
+    //}
+  };
+
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 1,
+            marginTop: 2,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -87,6 +149,7 @@ export default function SignOut() {
               autoComplete="mobile number"
             />
               <Autocomplete
+                    sx={{mt: 1}}
                     id="country-select-demo"
                     options={countries}
                     autoHighlight
@@ -134,13 +197,16 @@ export default function SignOut() {
               id="confirmpassword"
               autoComplete="confirm-password"
             />
+            <Stack>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" variant="body3" />}
               label="I agree to these"
             />
-            <Typography variant="body2" component="h2">
+            <Link to="#" variant="body2" component={RouterLink}>
                 Terms of Use and Privacy Policy
-            </Typography>
+            </Link>
+            </Stack>
+            
             <Button
               type="submit"
               fullWidth
