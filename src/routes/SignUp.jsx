@@ -1,185 +1,171 @@
-import { useState } from "react";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Card,
-  Container,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  styled,
-  TextField,
-} from "@mui/material";
+import * as React from "react";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { Link as RouterLink } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Autocomplete, Stack } from "@mui/material";
+import AuthService from "../services/auth.service";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+function Copyright(props) {
+  return (
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
+      <Link color="inherit" href="">
+        Apsicon
+      </Link>{" "}
+      {new Date().getFullYear()}
+      {"."}
+    </Typography>
+  );
+}
 
-const Label = styled("label")`
-  padding: 0 0 4px;
-  line-height: 1.5;
-  display: block;
-  font-weight: 600;
-`;
+const theme = createTheme();
 
-export default function RegistrationPage() {
-  const [gender, setGender] = useState("");
-  const [meal, setMeal] = useState("");
-  const [category, setCategory] = useState("");
-
-  const handleChange = (event) => {
-    setGender(event.target.value);
+export default function SignOut() {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get("email"),
+      password: data.get("password"),
+    });
   };
-  const handleMealChange = (event) => {
-    setMeal(event.target.value);
+
+  const initialUserService = {
+    id: null,
+    fullname: "",
+    email: "",
+    mobileno: "",
+    password: "",
+    country: "",
+    agree: true,
   };
 
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
+  const [user, setUser] = React.useState(initialUserService);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const saveUser = (e) => {
+    e.preventDefault();
+
+    //const isValid = formValidation();
+
+    // if (isValid) {
+    var data = {
+      fullname: user.fullname,
+      email: user.email,
+      mobileno: user.mobileno,
+      password: user.password,
+      country: user.country,
+      agree: user.agree,
+    };
+
+    AuthService.create(data)
+      .then((response) => {
+        debugger;
+        setUser({
+          id: response.data.id,
+          fullname: response.data.fullname,
+          email: response.data.email,
+          mobileno: response.data.mobileno,
+          password: response.data.password,
+          country: response.data.country,
+          agree: response.data.agree,
+        });
+        console.log(response.data);
+      })
+      .catch((error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(e);
+        console.log(resMessage);
+      });
+    //}
   };
 
   return (
-    <Container>
-      <Stack spacing={1}>
-        <Item>
-          <h2>Registration Form</h2>
-        </Item>
-      </Stack>
-      <Card sx={{ m: 1, p: 2, boxShadow: 2, mb: 2, borderRadius: 2 }}>
-        <Grid
-          container
-          rowSpacing={1}
-          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          style={{ marginTop: 2 }}
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
         >
-          <Grid item xs={6}>
+          {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar> */}
+          <Typography component="h1" variant="h5">
+            Create New Account
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 0.5 }}
+          >
             <TextField
+              margin="normal"
+              required
               fullWidth
-              id="outlined-uncontrolled"
+              id="fullname"
               label="Full Name"
-              defaultValue="foo"
+              name="fullname"
+              autoComplete="fullname"
+              size="small"
+              autoFocus
+              value={user.fullname}
+              onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
             <TextField
+              margin="normal"
+              required
               fullWidth
-              id="outlined-uncontrolled"
-              label="Designation"
-              defaultValue="foo"
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              size="small"
+              value={user.email}
+              onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={4}>
             <TextField
+              margin="normal"
+              required
               fullWidth
-              id="outlined-uncontrolled"
-              label="Email Id"
-              defaultValue="foo"
+              id="mobileno"
+              label="Mobile Number"
+              name="mobileno"
+              autoComplete="mobile number"
+              size="small"
+              value={user.mobileno}
+              onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              id="outlined-number"
-              label="Mobile No."
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              fullWidth
-              id="outlined-uncontrolled"
-              label="Institute"
-              defaultValue="foo"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              id="outlined-uncontrolled"
-              label="Address"
-              defaultValue="foo"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="outlined-uncontrolled"
-              label="City"
-              defaultValue="foo"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="outlined-uncontrolled"
-              label="State"
-              defaultValue="foo"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="outlined-uncontrolled"
-              label="Pincode"
-              defaultValue="foo"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              id="outlined-uncontrolled"
-              label="Medical Council Registration"
-              defaultValue="foo"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={gender}
-                label="Gender"
-                onChange={handleChange}
-              >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Meal Preference
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={meal}
-                label="Meal Preference"
-                onChange={handleMealChange}
-              >
-                <MenuItem selected={true} value="Veg">
-                  Veg
-                </MenuItem>
-                <MenuItem value="Non Veg">Non Veg</MenuItem>
-                <MenuItem value="NA">N/A</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
             <Autocomplete
+              sx={{ mt: 1 }}
               id="country-select-demo"
               options={countries}
               autoHighlight
@@ -202,102 +188,81 @@ export default function RegistrationPage() {
               )}
               renderInput={(params) => (
                 <TextField
-                  fullWidth
                   {...params}
                   label="Choose a country"
                   inputProps={{
                     ...params.inputProps,
                     autoComplete: "new-password", // disable autocomplete and autofill
                   }}
+                  size="small"
+                  value={user.country}
+                  onClick={handleInputChange}
                 />
               )}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Category*</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={category}
-                label="Category*"
-                onChange={handleCategoryChange}
-              >
-                <MenuItem value="india">Apsi Member</MenuItem>
-                <MenuItem value="iceland">Non Apsi Member</MenuItem>
-                <MenuItem value="iran">Apsi Member</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
             <TextField
+              margin="normal"
+              required
               fullWidth
-              id="outlined-uncontrolled"
-              label="Membership No. *"
-              defaultValue="1123213213213"
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              size="small"
+              value={user.password}
+              onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+            {/* <TextField
+              margin="normal"
+              required
               fullWidth
-              id="outlined-uncontrolled"
-              label="Age *"
-              defaultValue="24"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <Label>Upload Age Proof</Label>
-            <Button variant="contained" component="label">
-              Upload
-              <input hidden accept="image/*" multiple type="file" />
+              name="confirmpassword"
+              label="Confirm Password"
+              type="password"
+              id="confirmpassword"
+              autoComplete="confirm-password"
+              size="small"
+              onChange={handleInputChange}
+            /> */}
+            <Stack>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    color="primary"
+                    variant="body3"
+                    value={user.agree}
+                    onChange={handleInputChange}
+                  />
+                }
+                label="I agree to these"
+              />
+              <Link to="#" variant="body2" component={RouterLink}>
+                Terms of Use and Privacy Policy
+              </Link>
+            </Stack>
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 1, mb: 1 }}
+              onClick={saveUser}
+            >
+              Sign Up
             </Button>
-          </Grid>
-          <Grid item xs={12}>
-            <Label>Upload HOD Letter</Label>
-            <Button variant="contained" component="label">
-              Upload
-              <input hidden accept="image/*" multiple type="file" />
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Do you want register Accompanying Person ? *
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={category}
-                label="Do you want register Accompanying Person ? *"
-                onChange={handleCategoryChange}
-              >
-                <MenuItem value="0">Select</MenuItem>
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={6}>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Do you want register Masterclass ? *
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={category}
-                label="Do you want register Masterclass ? *"
-                onChange={handleCategoryChange}
-              >
-                <MenuItem value="india">Select</MenuItem>
-                <MenuItem value="Yes">Yes</MenuItem>
-                <MenuItem value="No">No</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-      </Card>
-    </Container>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link to={"/login"} component={RouterLink} variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 4, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
   );
 }
 

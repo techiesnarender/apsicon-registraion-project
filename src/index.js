@@ -9,7 +9,7 @@ import Root from "./routes/root";
 import ErrorPage from "./error-page";
 import RegistrationPage from './routes/RegistrationPage';
 import SignIn from './routes/SignIn';
-import SignOut from './routes/SignOut';
+import SignUp from './routes/SignUp';
 
 
 const router = createBrowserRouter([
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
   },
   {
     path: "signout",
-    element: <SignOut />,
+    element: <SignUp />,
   },
 ]); 
 

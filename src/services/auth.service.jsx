@@ -16,9 +16,9 @@ const login = (email, password) => {
 };
 
 const create = (data) => {
-    console.log(data);
-    return http.post("/users", data);
-  };
+  console.log(data);
+  return http.post("/user", data);
+};
 
 const changepassword = (oldpassword, newpassword, email) => {
   return http
